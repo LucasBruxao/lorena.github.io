@@ -630,60 +630,54 @@
 
     <h2 class="section-title">Nossa programação</h2>
 
-    <section class="timeline">
-      <article class="day-card">
-        <div class="day-top">
-          <div class="day-number">12</div>
-          <div class="day-date">
-            <strong>12/06/2026</strong>
-            <span>Sexta-feira</span>
-          </div>
-        </div>
-
-        <ul class="plan-list">
-          <li><span class="icon">🌷</span><span><strong>Primeiro:</strong> Pegar flores da Gazebo</span></li>
-          <li><span class="icon">📸</span><span><strong>Depois:</strong> Tirar fotos lindas juntos</span></li>
-          <li><span class="icon">🍹</span><span><strong>Jantar:</strong> Âmbar (18:30)</span></li>
-        </ul>
-      </article>
-
-      <article class="day-card">
-        <div class="day-top">
-          <div class="day-number">13</div>
-          <div class="day-date">
-            <strong>13/06/2026</strong>
-            <span>Sábado</span>
-          </div>
-        </div>
-
-        <ul class="plan-list">
-          <li><span class="icon">✂️</span><span><strong>De Manhã:</strong> Ir no Go Coffee Batel e depois Soaking (10:00)</span></li>
-          <li><span class="icon">🍦</span><span><strong>Caminho de Tarde:</strong> Irado Gelateria e depois comprar cartinha da Copa na Praça da Espanha</span></li>
-          <li><span class="icon">🍔</span><span><strong>Almoço:</strong> TT Burger</span></li>
-          <li><span class="icon">⚽</span><span><strong>Jantar:</strong> Céu Bar no jogo do Brasil, Início (17:00)</span></li>
-        </ul>
-      </article>
-
-      <article class="day-card">
-        <div class="day-top">
-          <div class="day-number">14</div>
-          <div class="day-date">
-            <strong>14/06/2026</strong>
-            <span>Domingo</span>
-          </div>
-        </div>
-
-        <ul class="plan-list">
-          <li><span class="icon">☕</span><span><strong>De manhã:</strong> Cor Café</span></li>
-          <li><span class="icon">🧑‍🍳</span><span><strong>Almoço:</strong> Vou cozinhar pra você</span></li>
-          <li><span class="icon">😴</span><span><strong>De tarde:</strong> Descansar</span></li>
-          <li><span class="icon">🍔</span><span><strong>Jantar:</strong> MC Donald's</span></li>
-        </ul>
-      </article>
+    <section class="carousel" aria-label="Programação dos dias">
+      <button class="carousel-nav carousel-nav-prev" type="button" aria-label="Dia anterior">‹</button>
+      <div class="carousel-viewport">
+        <div class="carousel-track" aria-live="polite"></div>
+      </div>
+      <button class="carousel-nav carousel-nav-next" type="button" aria-label="Próximo dia">›</button>
+      <div class="day-indicators" role="tablist" aria-label="Selecionar dia"></div>
     </section>
 
     <div class="footer-note">Lucas ❤ Lolena</div>
   </main>
+
+  <script type="application/json" id="schedule-data">
+{
+  "days": [
+    {
+      "date": "2026-06-12",
+      "weekday": "Sexta-feira",
+      "events": [
+        { "icon": "🌷", "label": "Primeiro", "title": "Pegar flores da Gazebo" },
+        { "icon": "📸", "label": "Depois", "title": "Tirar fotos lindas juntos" },
+        { "icon": "🍹", "label": "Jantar", "title": "Âmbar", "time": "18:30" }
+      ]
+    },
+    {
+      "date": "2026-06-13",
+      "weekday": "Sábado",
+      "events": [
+        { "icon": "✂️", "label": "De Manhã", "title": "Ir no Go Coffee Batel e depois Soaking", "time": "10:00" },
+        { "icon": "🍦", "label": "Caminho de Tarde", "title": "Irado Gelateria e depois comprar cartinha da Copa na Praça da Espanha" },
+        { "icon": "🍔", "label": "Almoço", "title": "TT Burger" },
+        { "icon": "⚽", "label": "Jantar", "title": "Céu Bar no jogo do Brasil", "time": "17:00" }
+      ]
+    },
+    {
+      "date": "2026-06-14",
+      "weekday": "Domingo",
+      "events": [
+        { "icon": "☕", "label": "De manhã", "title": "Cor Café" },
+        { "icon": "🧑‍🍳", "label": "Almoço", "title": "Vou cozinhar pra você" },
+        { "icon": "😴", "label": "De tarde", "title": "Descansar" },
+        { "icon": "🍔", "label": "Jantar", "title": "MC Donald's" }
+      ]
+    }
+  ]
+}
+  </script>
+
   <script>
     const music = document.getElementById("bgMusic");
     const musicToggle = document.getElementById("musicToggle");
