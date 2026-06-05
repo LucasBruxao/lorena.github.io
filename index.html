@@ -724,6 +724,49 @@
       border: 1px solid rgba(255, 255, 255, 0.5);
       border-radius: 16px;
     }
+
+    .event-image {
+      width: 100%;
+      max-height: 180px;
+      object-fit: cover;
+      border-radius: 14px;
+      border: 1px solid rgba(255, 255, 255, 0.5);
+    }
+
+    .event-description {
+      color: var(--text);
+      line-height: 1.55;
+      font-size: 0.98rem;
+    }
+
+    .event-address {
+      color: var(--muted);
+      font-size: 0.95rem;
+    }
+
+    .event-map {
+      width: 100%;
+      height: 180px;
+      border: 0;
+      border-radius: 14px;
+      background: rgba(255, 255, 255, 0.4);
+    }
+
+    .event-link {
+      align-self: flex-start;
+      padding: 8px 14px;
+      border-radius: 999px;
+      background: rgba(199, 143, 122, 0.18);
+      border: 1px solid rgba(199, 143, 122, 0.32);
+      color: var(--accent);
+      font-weight: 600;
+      font-size: 0.92rem;
+      text-decoration: none;
+    }
+
+    .event-link:hover {
+      background: rgba(199, 143, 122, 0.28);
+    }
   </style>
 </head>
 <body>
@@ -801,7 +844,7 @@
       "events": [
         { "icon": "🌷", "label": "Primeiro", "title": "Pegar flores da Gazebo" },
         { "icon": "📸", "label": "Depois", "title": "Tirar fotos lindas juntos" },
-        { "icon": "🍹", "label": "Jantar", "title": "Âmbar", "time": "18:30", "description": "Bistrô francês intimista — nosso lugar especial." }
+        { "icon": "🍹", "label": "Jantar", "title": "Âmbar", "time": "18:30", "description": "Bistrô francês intimista — nosso lugar especial.", "address": "R. Mateus Leme, 950 - São Francisco, Curitiba", "link": "https://www.instagram.com/ambar_restaurante/" }
       ]
     },
     {
@@ -868,7 +911,49 @@
     }
 
     function renderExpandedContent(inner, event) {
-      // Content sub-elements added in Task 6.
+      if (event.image) {
+        const img = document.createElement("img");
+        img.className = "event-image";
+        img.src = event.image;
+        img.alt = event.title;
+        img.loading = "lazy";
+        inner.appendChild(img);
+      }
+
+      if (event.description) {
+        const p = document.createElement("p");
+        p.className = "event-description";
+        p.textContent = event.description;
+        inner.appendChild(p);
+      }
+
+      if (event.address) {
+        const addr = document.createElement("p");
+        addr.className = "event-address";
+        addr.textContent = "📍 " + event.address;
+        inner.appendChild(addr);
+      }
+
+      if (event.coords && event.coords.length === 2) {
+        const iframe = document.createElement("iframe");
+        iframe.className = "event-map";
+        iframe.setAttribute("title", "Mapa do local");
+        iframe.setAttribute("loading", "lazy");
+        iframe.setAttribute("referrerpolicy", "no-referrer-when-downgrade");
+        iframe.dataset.lat = event.coords[0];
+        iframe.dataset.lng = event.coords[1];
+        inner.appendChild(iframe);
+      }
+
+      if (event.link) {
+        const a = document.createElement("a");
+        a.className = "event-link";
+        a.href = event.link;
+        a.target = "_blank";
+        a.rel = "noopener noreferrer";
+        a.textContent = "Abrir site ↗";
+        inner.appendChild(a);
+      }
     }
 
     function activateMapIfNeeded(panel, event) {
