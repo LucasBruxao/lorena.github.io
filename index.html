@@ -574,6 +574,101 @@
         font-size: 0.82rem;
       }
     }
+
+    /* Carousel */
+    .carousel {
+      position: relative;
+      margin-bottom: 24px;
+    }
+
+    .carousel-viewport {
+      overflow: hidden;
+      border-radius: 28px;
+    }
+
+    .carousel-track {
+      display: flex;
+      transition: transform 250ms ease;
+      will-change: transform;
+    }
+
+    .carousel-track > .day-card {
+      flex: 0 0 100%;
+      width: 100%;
+    }
+
+    .carousel-nav {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.78);
+      color: #7a5a4f;
+      border: 1px solid rgba(255, 255, 255, 0.92);
+      font-size: 1.6rem;
+      line-height: 1;
+      cursor: pointer;
+      box-shadow: 0 10px 24px rgba(124, 97, 81, 0.16);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      z-index: 2;
+      display: grid;
+      place-items: center;
+      padding-bottom: 4px;
+    }
+
+    .carousel-nav:hover {
+      background: rgba(255, 255, 255, 0.92);
+    }
+
+    .carousel-nav-prev {
+      left: -10px;
+    }
+
+    .carousel-nav-next {
+      right: -10px;
+    }
+
+    .day-indicators {
+      display: flex;
+      justify-content: center;
+      gap: 8px;
+      margin-top: 14px;
+    }
+
+    .day-indicator {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      border: none;
+      background: rgba(199, 143, 122, 0.32);
+      cursor: pointer;
+      padding: 0;
+      transition: background 0.2s ease, transform 0.2s ease;
+    }
+
+    .day-indicator.is-active {
+      background: var(--accent);
+      transform: scale(1.25);
+    }
+
+    @media (max-width: 560px) {
+      .carousel-nav {
+        width: 38px;
+        height: 38px;
+        font-size: 1.3rem;
+      }
+
+      .carousel-nav-prev {
+        left: 6px;
+      }
+
+      .carousel-nav-next {
+        right: 6px;
+      }
+    }
   </style>
 </head>
 <body>
@@ -693,6 +788,94 @@
         musicToggle.textContent = "Tocar música ♫";
       }
     });
+
+    const scheduleData = JSON.parse(
+      document.getElementById("schedule-data").textContent
+    );
+
+    function formatDateBR(isoDate) {
+      const [y, m, d] = isoDate.split("-");
+      return `${d}/${m}/${y}`;
+    }
+
+    function dayNumberFromIso(isoDate) {
+      return isoDate.split("-")[2].replace(/^0/, "");
+    }
+
+    function buildDayCard(day) {
+      const card = document.createElement("article");
+      card.className = "day-card";
+
+      const top = document.createElement("div");
+      top.className = "day-top";
+
+      const num = document.createElement("div");
+      num.className = "day-number";
+      num.textContent = dayNumberFromIso(day.date);
+
+      const dateBlock = document.createElement("div");
+      dateBlock.className = "day-date";
+      const strong = document.createElement("strong");
+      strong.textContent = formatDateBR(day.date);
+      const span = document.createElement("span");
+      span.textContent = day.weekday;
+      dateBlock.appendChild(strong);
+      dateBlock.appendChild(span);
+
+      top.appendChild(num);
+      top.appendChild(dateBlock);
+
+      const list = document.createElement("ul");
+      list.className = "plan-list";
+
+      day.events.forEach(function (event) {
+        const li = document.createElement("li");
+
+        const iconSpan = document.createElement("span");
+        iconSpan.className = "icon";
+        iconSpan.textContent = event.icon;
+
+        const textSpan = document.createElement("span");
+        const labelStrong = document.createElement("strong");
+        labelStrong.textContent = event.label + ":";
+        textSpan.appendChild(labelStrong);
+        textSpan.appendChild(document.createTextNode(" " + event.title));
+        if (event.time) {
+          textSpan.appendChild(document.createTextNode(" (" + event.time + ")"));
+        }
+
+        li.appendChild(iconSpan);
+        li.appendChild(textSpan);
+        list.appendChild(li);
+      });
+
+      card.appendChild(top);
+      card.appendChild(list);
+      return card;
+    }
+
+    function renderSchedule() {
+      const track = document.querySelector(".carousel-track");
+      const indicators = document.querySelector(".day-indicators");
+      track.innerHTML = "";
+      indicators.innerHTML = "";
+
+      scheduleData.days.forEach(function (day, index) {
+        track.appendChild(buildDayCard(day));
+
+        const dot = document.createElement("button");
+        dot.className = "day-indicator";
+        dot.type = "button";
+        dot.setAttribute("role", "tab");
+        dot.setAttribute("aria-label", "Dia " + dayNumberFromIso(day.date));
+        if (index === 0) {
+          dot.classList.add("is-active");
+        }
+        indicators.appendChild(dot);
+      });
+    }
+
+    renderSchedule();
   </script>
 </body>
 </html>
