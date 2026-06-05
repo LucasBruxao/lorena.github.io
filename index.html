@@ -854,6 +854,29 @@
       return card;
     }
 
+    let currentDayIndex = 0;
+
+    function pickInitialDayIndex() {
+      const now = new Date();
+      const pad = function (n) { return n < 10 ? "0" + n : "" + n; };
+      const todayIso =
+        now.getFullYear() + "-" + pad(now.getMonth() + 1) + "-" + pad(now.getDate());
+      const match = scheduleData.days.findIndex(function (d) {
+        return d.date === todayIso;
+      });
+      return match >= 0 ? match : 0;
+    }
+
+    function goToDay(index) {
+      const count = scheduleData.days.length;
+      currentDayIndex = ((index % count) + count) % count;
+      const track = document.querySelector(".carousel-track");
+      track.style.transform = "translateX(-" + (currentDayIndex * 100) + "%)";
+      document.querySelectorAll(".day-indicator").forEach(function (dot, i) {
+        dot.classList.toggle("is-active", i === currentDayIndex);
+      });
+    }
+
     function renderSchedule() {
       const track = document.querySelector(".carousel-track");
       const indicators = document.querySelector(".day-indicators");
@@ -868,14 +891,36 @@
         dot.type = "button";
         dot.setAttribute("role", "tab");
         dot.setAttribute("aria-label", "Dia " + dayNumberFromIso(day.date));
-        if (index === 0) {
-          dot.classList.add("is-active");
-        }
+        dot.addEventListener("click", function () {
+          goToDay(index);
+        });
         indicators.appendChild(dot);
       });
+
+      document
+        .querySelector(".carousel-nav-prev")
+        .addEventListener("click", function () {
+          goToDay(currentDayIndex - 1);
+        });
+      document
+        .querySelector(".carousel-nav-next")
+        .addEventListener("click", function () {
+          goToDay(currentDayIndex + 1);
+        });
+
+      document
+        .querySelector(".carousel")
+        .addEventListener("keydown", function (e) {
+          if (e.key === "ArrowLeft") {
+            goToDay(currentDayIndex - 1);
+          } else if (e.key === "ArrowRight") {
+            goToDay(currentDayIndex + 1);
+          }
+        });
     }
 
     renderSchedule();
+    goToDay(pickInitialDayIndex());
   </script>
 </body>
 </html>
