@@ -4,6 +4,9 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Dia dos Namorados - Lorena</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600;700&family=Quicksand:wght@400;500;600&display=swap" rel="stylesheet" />
   <style>
     :root {
       --bg-1: #f6efe6;
@@ -21,7 +24,7 @@
       margin: 0;
       padding: 0;
       box-sizing: border-box;
-      font-family: "Segoe UI", Arial, sans-serif;
+      font-family: "Quicksand", "Segoe UI", Arial, sans-serif;
     }
 
     body {
@@ -112,8 +115,10 @@
     }
 
     .hero h1 {
-      font-size: clamp(2.2rem, 5vw, 4.2rem);
-      line-height: 1.02;
+      font-family: "Dancing Script", "Quicksand", cursive;
+      font-weight: 700;
+      font-size: clamp(2.8rem, 6vw, 5rem);
+      line-height: 1.05;
       margin-bottom: 16px;
     }
 
@@ -142,6 +147,51 @@
       font-weight: 600;
     }
 
+    .countdown {
+      margin-top: 16px;
+      font-family: "Dancing Script", "Quicksand", cursive;
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--accent);
+    }
+
+    .countdown .count-num {
+      font-size: 2rem;
+      padding: 0 4px;
+    }
+
+    .love-note {
+      margin-top: 10px;
+      min-height: 1.5em;
+      font-size: 1.02rem;
+      font-style: italic;
+      color: var(--muted);
+      transition: opacity 0.5s ease;
+    }
+
+    .love-note.is-fading {
+      opacity: 0;
+    }
+
+    .click-heart {
+      position: fixed;
+      z-index: 50;
+      pointer-events: none;
+      transform: translate(-50%, -50%);
+      animation: pop-heart 1s ease-out forwards;
+    }
+
+    @keyframes pop-heart {
+      0% {
+        opacity: 1;
+        transform: translate(-50%, -50%) scale(0.5) rotate(0deg);
+      }
+      100% {
+        opacity: 0;
+        transform: translate(-50%, -180%) scale(1.3) rotate(12deg);
+      }
+    }
+
     .photo-card {
       min-height: 360px;
       padding: 16px;
@@ -151,6 +201,7 @@
     }
 
     .photo-frame {
+      position: relative;
       width: 100%;
       height: 100%;
       min-height: 328px;
@@ -160,6 +211,23 @@
       background:
         linear-gradient(145deg, rgba(255,255,255,0.5), rgba(255,255,255,0.22));
       padding: 14px;
+    }
+
+    .photo-caption {
+      position: absolute;
+      left: 50%;
+      bottom: 20px;
+      transform: translateX(-50%) rotate(-3deg);
+      font-family: "Dancing Script", "Quicksand", cursive;
+      font-weight: 700;
+      font-size: 1.4rem;
+      color: var(--accent);
+      background: rgba(255, 255, 255, 0.88);
+      padding: 2px 18px;
+      border-radius: 999px;
+      box-shadow: 0 6px 16px rgba(124, 97, 81, 0.2);
+      pointer-events: none;
+      z-index: 2;
     }
 
     .photo-collage {
@@ -174,9 +242,10 @@
     .photo-main,
     .photo-side {
       overflow: hidden;
-      border-radius: 18px;
-      border: 1px solid rgba(255,255,255,0.38);
+      border-radius: 14px;
+      border: 5px solid rgba(255, 255, 255, 0.9);
       background: rgba(255,255,255,0.28);
+      box-shadow: 0 8px 20px rgba(124, 97, 81, 0.16);
       animation: sway 6s ease-in-out infinite;
       transform-origin: center center;
       will-change: transform;
@@ -221,8 +290,11 @@
     }
 
     .section-title {
+      font-family: "Dancing Script", "Quicksand", cursive;
+      font-weight: 700;
       margin: 10px 0 18px;
-      font-size: clamp(1.55rem, 3vw, 2.2rem);
+      font-size: clamp(2rem, 4vw, 2.9rem);
+      color: var(--accent);
       text-align: center;
     }
 
@@ -789,6 +861,8 @@
           Uma pequena agenda feita com carinho, para transformar esses dias em lembranças bonitas.
         </p>
         <div class="date-pill">❤ 12 • 13 • 14 de junho de 2026</div>
+        <div class="countdown" id="countdown" aria-live="polite"></div>
+        <p class="love-note" id="loveNote" aria-live="polite"></p>
       </div>
 
       <div class="photo-card">
@@ -807,6 +881,7 @@
               </div>
             </div>
           </div>
+          <span class="photo-caption">nós dois 💛</span>
         </div>
       </div>
     </section>
@@ -1133,6 +1208,88 @@
 
     renderSchedule();
     goToDay(pickInitialDayIndex());
+
+    /* Countdown to the first day of the trip */
+    function renderCountdown() {
+      const el = document.getElementById("countdown");
+      if (!el) return;
+      const target = new Date(2026, 5, 12, 0, 0, 0); // 12 June 2026
+      const tripEnd = new Date(2026, 5, 14, 23, 59, 59);
+      const now = new Date();
+      const msPerDay = 24 * 60 * 60 * 1000;
+      const startOfToday = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+      const days = Math.round((target - startOfToday) / msPerDay);
+
+      if (days > 1) {
+        el.innerHTML =
+          'Faltam <span class="count-num">' + days + "</span> dias para o nosso dia 💕";
+      } else if (days === 1) {
+        el.innerHTML = "Falta só <span class=\"count-num\">1</span> dia… 💕";
+      } else if (now <= tripEnd) {
+        el.textContent = "É agora! Aproveita cada segundo 🥰";
+      } else {
+        el.textContent = "Pra sempre, nós dois 💛";
+      }
+    }
+    renderCountdown();
+
+    /* Rotating sweet notes in the hero */
+    const loveNotes = [
+      "Cada dia ao seu lado é meu lugar favorito.",
+      "Feito com muito carinho, só pra você. 💛",
+      "Mal posso esperar pra viver tudo isso com você.",
+      "Você é a minha pessoa preferida no mundo.",
+      "Que sejam muitos e muitos dias dos namorados juntos."
+    ];
+    const loveNoteEl = document.getElementById("loveNote");
+    if (loveNoteEl) {
+      let noteIndex = 0;
+      loveNoteEl.textContent = loveNotes[0];
+      setInterval(function () {
+        loveNoteEl.classList.add("is-fading");
+        setTimeout(function () {
+          noteIndex = (noteIndex + 1) % loveNotes.length;
+          loveNoteEl.textContent = loveNotes[noteIndex];
+          loveNoteEl.classList.remove("is-fading");
+        }, 500);
+      }, 4500);
+    }
+
+    /* Little hearts that float up on tap/click */
+    const heartGlyphs = ["💕", "💖", "💗", "🌸", "❤"];
+
+    function spawnHeart(x, y) {
+      const h = document.createElement("span");
+      h.className = "click-heart";
+      h.textContent = heartGlyphs[Math.floor(Math.random() * heartGlyphs.length)];
+      h.style.left = x + "px";
+      h.style.top = y + "px";
+      h.style.fontSize = 0.9 + Math.random() * 1.1 + "rem";
+      document.body.appendChild(h);
+      setTimeout(function () {
+        h.remove();
+      }, 1000);
+    }
+
+    document.addEventListener("click", function (e) {
+      spawnHeart(e.clientX, e.clientY);
+    });
+
+    /* A gentle shower of hearts when the page opens */
+    function heartShower() {
+      const total = 14;
+      for (let i = 0; i < total; i++) {
+        (function (i) {
+          setTimeout(function () {
+            spawnHeart(
+              window.innerWidth * (0.1 + Math.random() * 0.8),
+              window.innerHeight * (0.2 + Math.random() * 0.5)
+            );
+          }, i * 120);
+        })(i);
+      }
+    }
+    heartShower();
   </script>
 </body>
 </html>
