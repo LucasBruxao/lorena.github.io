@@ -670,18 +670,12 @@
       }
     }
 
-    /* Expandable events */
+    /* Expandable events (always expanded) */
     .plan-list li.is-expandable {
       flex-direction: column;
       align-items: stretch;
       gap: 0;
       padding: 0;
-      cursor: pointer;
-      transition: background 0.2s ease;
-    }
-
-    .plan-list li.is-expandable:hover {
-      background: rgba(255, 255, 255, 0.5);
     }
 
     .plan-list li.is-expandable .event-row {
@@ -691,28 +685,8 @@
       padding: 12px 14px;
     }
 
-    .plan-list li .chevron {
-      margin-left: auto;
-      font-size: 0.95rem;
-      color: var(--muted);
-      transition: transform 0.2s ease;
-      align-self: center;
-    }
-
-    .plan-list li.is-open .chevron {
-      transform: rotate(180deg);
-    }
-
     .event-expand-panel {
-      max-height: 0;
-      overflow: hidden;
-      transition: max-height 0.25s ease;
-      padding: 0 14px;
-    }
-
-    .event-expand-panel.is-open {
-      max-height: 720px;
-      padding-bottom: 14px;
+      padding: 0 14px 14px;
     }
 
     .event-expand-inner {
@@ -1037,20 +1011,11 @@
         const expandable = hasExpandableContent(event);
         if (expandable) {
           li.classList.add("is-expandable");
-          li.setAttribute("role", "button");
-          li.setAttribute("tabindex", "0");
-          li.setAttribute("aria-expanded", "false");
 
           const row = document.createElement("div");
           row.className = "event-row";
           row.appendChild(iconSpan);
           row.appendChild(textSpan);
-
-          const chevron = document.createElement("span");
-          chevron.className = "chevron";
-          chevron.textContent = "▾";
-          chevron.setAttribute("aria-hidden", "true");
-          row.appendChild(chevron);
 
           const panel = document.createElement("div");
           panel.className = "event-expand-panel";
@@ -1063,31 +1028,7 @@
           li.appendChild(panel);
           list.appendChild(li);
 
-          const toggle = function () {
-            const isOpen = li.classList.contains("is-open");
-            list.querySelectorAll("li.is-expandable.is-open").forEach(function (other) {
-              if (other !== li) {
-                other.classList.remove("is-open");
-                other.setAttribute("aria-expanded", "false");
-                const otherPanel = other.querySelector(".event-expand-panel");
-                if (otherPanel) otherPanel.classList.remove("is-open");
-              }
-            });
-            li.classList.toggle("is-open", !isOpen);
-            li.setAttribute("aria-expanded", !isOpen ? "true" : "false");
-            panel.classList.toggle("is-open", !isOpen);
-            if (!isOpen) {
-              activateMapIfNeeded(panel, event);
-            }
-          };
-
-          li.addEventListener("click", toggle);
-          li.addEventListener("keydown", function (e) {
-            if (e.key === "Enter" || e.key === " ") {
-              e.preventDefault();
-              toggle();
-            }
-          });
+          activateMapIfNeeded(panel, event);
         } else {
           li.appendChild(iconSpan);
           li.appendChild(textSpan);
